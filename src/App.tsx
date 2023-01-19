@@ -1,16 +1,25 @@
 import { ChangeEvent, useState } from "react";
+import { TodoTask } from "./components/TodoTask";
+import { ITask } from "./Interfaces";
 
 function App() {
   const [task, setTask] = useState<string>("");
   const [deadline, setDeadline] = useState<number>(0);
-  const [todo, setTodoList] = useState([]);
+  const [todoList, setTodoList] = useState<ITask[]>([]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     if (e.target.name === "task") {
       setTask(e.target.value);
     } else {
       setDeadline(Number(e.target.value));
     }
+  };
+
+  const addTask = (): void => {
+    const newTask = { taskName: task, deadline };
+    setTodoList([...todoList, newTask]);
+    setTask("");
+    setDeadline(0);
   };
 
   return (
@@ -32,9 +41,13 @@ function App() {
             onChange={handleChange}
           />
         </div>
-        <button>Add Task</button>
+        <button onClick={addTask}>Add Task</button>
       </div>
-      <div className="todoList"></div>
+      <div className="todoList">
+        {todoList.map((task: ITask, key: number) => (
+          <TodoTask key={key} task={task} />
+        ))}
+      </div>
     </div>
   );
 }
